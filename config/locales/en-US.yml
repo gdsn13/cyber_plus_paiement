@@ -1,0 +1,25 @@
+---
+en-US:
+  login: Client Id
+  url: URL
+  cert_for_test: Certificate for the Test environment
+  cert_for_prod: Certificate for the Production environment
+  cyber_plus_paiement:
+    invalid_arguments: Invalid arguments
+    payment_success: "Yes! Your payment has been accepted, your order is completed !!"
+    payment_success_callback: "Payment validated on Spree server"
+    payment_error_callback: "Payment NOT validated on Spree server ::: %{msg}"
+    payment_error_refused: "Error : An problem occured during the payment and it has not been proceeded, please try again or contact us to solve that issue."
+    payment_error_secu_amount_paid: "SECURITY ISSUE : The payment has been proceeded but the order amount [%{o_amount}] and the amount paid [%{r_amount}] are not matching, your oder has not been validated, please contact us to solve that issue !!!!!"
+    payment_error_secu_amount_not_paid: "SECURITY ISSUE : The payment has NOT been proceeded but the order amount [%{o_amount}] and the amount paid [%{r_amount}] are not matching, please contact us to solve that issue !!!!!"
+    payment_error_secu_signature_paid: "SECURITY ISSUE : The payment has been proceeded but the signature of the server answer is not correct, your order has not been validated, please contact us to solve that issue !!!!!"
+    payment_error_secu_signature_not_paid: "SECURITY ISSUE : The payment has NOT been proceeded but the signature of the server answer is not correct, please contact us to solve that issue !!!!!"
+    payment_error_gateway: "Error : PaymentMethod instance not CyberPlusPaiment object, please try again"
+    payment_error_already: "Error : The payment has already been proceeded !!!!!"
+    payment_error_order_not_found: "Error : Order not found !!"
+    payment_error_server_trace: "<br />CyberPlus server trace : "
+    checkout_message: You will be redirected to the Cyber Plus Paiement secure servers to proceed the payment, one you will have validated your order.
+    checkout_validation_title: Cyber Plus Paiement
+    checkout_validation_confirm: Order confirmation
+    checkout_validation_instructions: "Click the payment button below to have your credit card processed by our secure servers."
+    checkout_validation_submit: Pay Now
