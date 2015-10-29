@@ -1,0 +1,14 @@
+<div id="confirm_paiement">
+  <h2><%= I18n.t('cyber_plus_paiement.checkout_validation_title') %></h2>
+  <fieldset id="order_details">
+    <legend><%= I18n.t('cyber_plus_paiement.checkout_validation_confirm') %></legend>
+    <%#= render :partial => 'spree/shared/order_details', :locals => {:order => @order} -%>
+  </fieldset>
+  <br/><br/>
+  <p><%= I18n.t('cyber_plus_paiement.checkout_validation_instructions') %></p>
+  <br/><br/>
+	<%= form_tag @payment_method.preferred_url do -%>
+		<%= @payment_method.build_request(@order).map{ |k, v| hidden_field_tag(k.to_s, v) }.join.html_safe %>
+		<%= submit_tag I18n.t('cyber_plus_paiement.checkout_validation_submit') %>
+	<% end %>
+</div>

@@ -1,5 +1,5 @@
 ---
-en-US:
+en:
   login: Client Id
   url: URL
   cert_for_test: Certificate for the Test environment

@@ -1,5 +1,5 @@
 ---
-fr-FR:
+fr:
   login: Identifiant Client
   url: URL
   cert_for_test: Certificat pour l'environnement de Test
