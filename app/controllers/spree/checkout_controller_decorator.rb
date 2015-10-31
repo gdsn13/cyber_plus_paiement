@@ -4,7 +4,8 @@ module Spree
     # include ActiveMerchant::RequiresParameters
 
     before_filter :redirect_for_cyber_plus_paiement
-#      before_filter :load_data, :except => [:payment_success, :payment_failure]
+    # before_filter :load_data, :except => [:payment_success, :payment_failure]
+
     def redirect_for_cyber_plus_paiement
       if params[:state] == 'payment' && action_name = 'update' && @order.payment?
         if @order.payments.last.present? && @order.payments.last.payment_method.class.to_s == 'Spree::PaymentMethod::CyberPlusPaiement'

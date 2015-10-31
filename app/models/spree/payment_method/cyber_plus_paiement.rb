@@ -65,5 +65,34 @@ module Spree
       key += (self.test? ? self.preferred_cert_for_test : self.preferred_cert_for_prod)
       return Digest::SHA1.hexdigest(key)
     end
+
+    def self.process_payment(order, payment_method, data)
+      payment = order.payments.where(
+          amount: order.total,
+          payment_method_id: payment_method.id,
+          state: 'processing'
+      ).last
+
+      #raise "Payment Not Found" unless payment.present?
+      if payment.blank?
+        payment = order.payments.create(
+            amount: order.total,
+            payment_method_id: payment_method.id,
+            state: 'processing'
+        )
+      end
+
+      # INFO : Old hack ... for code legacy
+      #until order.state.completed?
+      #  order.next!
+      #end
+
+      # TODO : Check borderline cases
+      if payment.complete
+        order.finalize!
+      end
+
+      return payment
+    end
   end
 end

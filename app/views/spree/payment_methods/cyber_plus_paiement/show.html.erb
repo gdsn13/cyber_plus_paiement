@@ -2,7 +2,7 @@
   <h2><%= I18n.t('cyber_plus_paiement.checkout_validation_title') %></h2>
   <fieldset id="order_details">
     <legend><%= I18n.t('cyber_plus_paiement.checkout_validation_confirm') %></legend>
-    <%#= render :partial => 'spree/shared/order_details', :locals => {:order => @order} -%>
+    <%= render :partial => 'spree/shared/order_details', locals: {order: @order} -%>
   </fieldset>
   <br/><br/>
   <p><%= I18n.t('cyber_plus_paiement.checkout_validation_instructions') %></p>

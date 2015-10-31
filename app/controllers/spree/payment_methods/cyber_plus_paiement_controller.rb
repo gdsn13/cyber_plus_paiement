@@ -1,6 +1,8 @@
 module Spree
   class PaymentMethods::CyberPlusPaiementController < ApplicationController
-    include ERB::Util
+    #include ERB::Util
+    helper Spree::BaseHelper
+
     skip_before_filter :verify_authenticity_token, :only => [:callback, :comeback]
 
     def show
@@ -19,7 +21,8 @@ module Spree
     def callback
       if params[:vads_order_id] && @order=Order.find(params[:vads_order_id])
         msg = response_treatment(@order, params)
-        if @order.state == 'complete'
+
+        if @order.completed?
           render :text => t('cyber_plus_paiement.payment_success_callback')
         else
           render :text => t('cyber_plus_paiement.payment_error_callback', :msg => msg)
@@ -32,7 +35,8 @@ module Spree
     def comeback
       if params[:vads_order_id] && @order=Order.find(params[:vads_order_id])
         msg = response_treatment(@order, params, true)
-        if @order.state == 'complete'
+
+        if @order.completed?
           session[:order_id] = nil
           flash[:notice] = msg
           redirect_to order_url(@order)
@@ -52,10 +56,10 @@ module Spree
       # Check if the order is not complete or if we just want to check that later in the process and also escape the
       # message linked to an order already complete). It is usefull in the case of 'comeback' has we want the message
       # corresponding to the request statement and not directly the order statement
-      if order.state != 'complete' || check_complete_later
-        if (@payment_method=order.payments.first.payment_method) && @payment_method.kind_of?(PaymentMethod::CyberPlusPaiement)
+      if order.completed? || check_complete_later
+        if (payment_method=order.payments.first.payment_method) && payment_method.kind_of?(PaymentMethod::CyberPlusPaiement)
           # SECURITY : Verifying the signature from the request
-          if params[:signature] == @payment_method.generate_signature(params)
+          if params[:signature] == payment_method.generate_signature(params)
             # SECURITY : Verifying that the amount paid and the amount on the order are equals
             # (actually useless after the signature checking but still ...)
             if params[:vads_amount].to_i == (order.total.to_f * 100).to_i
@@ -63,19 +67,16 @@ module Spree
               if params[:vads_result] == "00"
                 # If we just want the msg, we should skip the payement process, but in case the order hasn't been
                 # completed as it should (callback late ?!), we should proceed the payement here
-                if order.state != 'complete'
-                  payment = payment_success(params)
+                if !order.completed?
+                  payment = PaymentMethod::CyberPlusPaiement.process_payment(order, payment_method, params)
 
-                  #until order.state == "complete"
-                  #  order.next!
-                  #end
-
-                  if payment.complete
-                    order.finalize!
+                  if payment.completed?
+                    return t('cyber_plus_paiement.payment_success')
                   else
-                    return t("Order not Finalized : #{order.errors.inspect}")
+                    return t("Order not Finalized, Payment status : #{payment.state}")
                   end
                 end
+
                 return t('cyber_plus_paiement.payment_success')
               else
                 return t('cyber_plus_paiement.payment_error_refused')+payment_error(params)
@@ -96,25 +97,6 @@ module Spree
       else
         return t('cyber_plus_paiement.payment_error_already')
       end
-    end
-
-    def payment_success(data)
-      payment = @order.payments.where(
-          amount: @order.total,
-          payment_method_id: @payment_method.id,
-          state: 'processing'
-      ).last
-
-      #raise "Payment Not Found" unless payment.present?
-      if payment.blank?
-        payment = @order.payments.create(
-            amount: @order.total,
-            payment_method_id: @payment_method.id,
-            state: 'processing'
-        )
-      end
-
-      return payment
     end
 
     def payment_error(data)
