@@ -1,25 +1,25 @@
 ---
 fr:
-  login: Identifiant Client
-  url: URL
-  cert_for_test: Certificat pour l'environnement de Test
-  cert_for_prod: Certificat pour l'environnement de Production
+  login: "Identifiant Client"
+  url: "URL"
+  cert_for_test: "Certificat pour l'environnement de Test"
+  cert_for_prod: "Certificat pour l'environnement de Production"
   cyber_plus_paiement:
-    invalid_arguments: Arguments invalides (Numéro de commande ou numéro de méthode de paiement)
-    payment_success: Votre paiement a été enregistré avec succès, votre commande est validée !!
+    invalid_arguments: "Arguments invalides (Numéro de commande ou numéro de méthode de paiement)"
+    payment_success: "Votre paiement a été enregistré avec succès, votre commande est validée !!"
     payment_success_callback: "Paiement validé sur le serveur Spree"
     payment_error_callback: "Paiement NON validé sur le serveur Spree ::: %{msg}"
-    payment_error_refused: "Erreur : Un problème est survenu durant le paiement et celui-ci n'a pu \xC3\xAAtre finalisé, veillez reéssayer ou nous contacter en cas de nouveau problème."
-    payment_error_secu_amount_paid: "SECURITY ISSUE : The payment has been proceeded but the order amount [%{o_amount}] and the amount paid [%{r_amount}] are not matching, your oder has not been validated, please contact us to solve that issue !!!!!"
-    payment_error_secu_amount_not_paid: "SECURITY ISSUE : The payment has NOT been proceeded but the order amount [%{o_amount}] and the amount paid [%{r_amount}] are not matching, please contact us to solve that issue !!!!!"
+    payment_error_refused: "Erreur : Un problème est survenu durant le paiement et celui-ci n'a pu être finalisé, veillez reéssayer ou nous contacter en cas de nouveau problème."
+    payment_error_secu_amount_paid: "SECURITY ISSUE : The payment has been proceeded but the order amount %{o_amount} and the amount paid [%{r_amount}] are not matching, your oder has not been validated, please contact us to solve that issue !!!!!"
+    payment_error_secu_amount_not_paid: "SECURITY ISSUE : The payment has NOT been proceeded but the order amount %{o_amount} and the amount paid %{r_amount} are not matching, please contact us to solve that issue !!!!!"
     payment_error_secu_signature_paid: "SECURITY ISSUE : The payment has been proceeded but the signature of the server answer is not correct, your order has not been validated, please contact us to solve that issue !!!!!"
     payment_error_secu_signature_not_paid: "SECURITY ISSUE : The payment has NOT been proceeded but the signature of the server answer is not correct, please contact us to solve that issue !!!!!"
     payment_error_gateway: "Error : PaymentMethod instance not CyberPlusPaiment object, please try again"
-    payment_error_already: "Error : The payment has already been proceeded !!!!!"
-    payment_error_order_not_found: "Error : Order not found !!"
+    payment_error_already: "Erreur : Le paiement a déjà été effectué !!!!!"
+    payment_error_order_not_found: "Erreur : Commande introuvable !!"
     payment_error_server_trace: "<br />Trace du serveur CyberPlus : "
-    checkout_message: Vous serez rediriger vers la plateforme de paiement sécurisé de CyberPlus une fois que vous aurez validé votre commande.
-    checkout_validation_title: Cyber Plus Paiement
-    checkout_validation_confirm: Confirmation de la commande
-    checkout_validation_instructions: "Vous allez \xC3\xAAtre rediriger vers la plateforme de paiement sécurisé de CyberPlus pour effectuer le paiement puis vous reviendrez sur notre site."
-    checkout_validation_submit: Payer maintenant
+    checkout_message: "Vous serez rediriger vers la plateforme de paiement sécurisé de CyberPlus une fois que vous aurez validé votre commande."
+    checkout_validation_title: "Cyber Plus Paiement"
+    checkout_validation_confirm: "Confirmation de la commande"
+    checkout_validation_instructions: "Vous allez être redirigé(e) vers la plateforme de paiement sécurisé de CyberPlus pour effectuer le paiement puis vous reviendrez sur notre site."
+    checkout_validation_submit: "Payer maintenant"

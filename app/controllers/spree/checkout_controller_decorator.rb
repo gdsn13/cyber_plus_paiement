@@ -6,10 +6,7 @@ module Spree
     before_filter :redirect_for_cyber_plus_paiement
 #      before_filter :load_data, :except => [:payment_success, :payment_failure]
     def redirect_for_cyber_plus_paiement
-      p "============ #{params[:state]}"
-      p "============ #{action_name}"
-      if params[:state] == 'payment' && action_name = 'update' #@order.payment?
-        #raise @order.payments.last.payment_method.class.to_s.inspect
+      if params[:state] == 'payment' && action_name = 'update' && @order.payment?
         if @order.payments.last.present? && @order.payments.last.payment_method.class.to_s == 'Spree::PaymentMethod::CyberPlusPaiement'
           payment_method = @order.payments.last.payment_method
           redirect_to(gateway_cyber_plus_paiement_url(gateway_id: payment_method.id, order_id: @order.id)) and return

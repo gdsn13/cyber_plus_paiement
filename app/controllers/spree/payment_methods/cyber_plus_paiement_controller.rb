@@ -9,8 +9,6 @@ module Spree
       @order.payments.destroy_all
       payment = @order.payments.create!(:amount => 0, :payment_method_id => @payment_method.id)
       if @order.blank? || @payment_method.blank?
-        p @order
-        p @payment_method
         flash[:error] = t("cyber_plus_paiement.invalid_arguments")
         redirect_to checkout_url
       else
@@ -21,7 +19,7 @@ module Spree
     def callback
       if params[:vads_order_id] && @order=Order.find(params[:vads_order_id])
         msg = response_treatment(@order, params)
-        if @order.checkout.state == 'complete'
+        if @order.state == 'complete'
           render :text => t('cyber_plus_paiement.payment_success_callback')
         else
           render :text => t('cyber_plus_paiement.payment_error_callback', :msg => msg)
@@ -34,14 +32,13 @@ module Spree
     def comeback
       if params[:vads_order_id] && @order=Order.find(params[:vads_order_id])
         msg = response_treatment(@order, params, true)
-        p "===============================#{msg}"
-        if @order.checkout.state == 'complete'
+        if @order.state == 'complete'
           session[:order_id] = nil
           flash[:notice] = msg
-          redirect_to order_url(@order, {:checkout_complete => true, :order_token => @order.token})
+          redirect_to order_url(@order)
         else
           flash[:error] = msg
-          redirect_to edit_order_url(@order)
+          redirect_to checkout_state_path(@order)
         end
       else
         flash[:error] = t('cyber_plus_paiement.payment_error_order_not_found')
@@ -55,7 +52,7 @@ module Spree
       # Check if the order is not complete or if we just want to check that later in the process and also escape the
       # message linked to an order already complete). It is usefull in the case of 'comeback' has we want the message
       # corresponding to the request statement and not directly the order statement
-      if order.checkout.state != 'complete' || check_complete_later
+      if order.state != 'complete' || check_complete_later
         if (@payment_method=order.payments.first.payment_method) && @payment_method.kind_of?(PaymentMethod::CyberPlusPaiement)
           # SECURITY : Verifying the signature from the request
           if params[:signature] == @payment_method.generate_signature(params)
@@ -66,13 +63,18 @@ module Spree
               if params[:vads_result] == "00"
                 # If we just want the msg, we should skip the payement process, but in case the order hasn't been
                 # completed as it should (callback late ?!), we should proceed the payement here
-                if order.checkout.state != 'complete'
+                if order.state != 'complete'
                   payment = payment_success(params)
-                  until order.checkout.state == "complete"
-                    order.checkout.next!
+
+                  #until order.state == "complete"
+                  #  order.next!
+                  #end
+
+                  if payment.complete
+                    order.finalize!
+                  else
+                    return t("Order not Finalized : #{order.errors.inspect}")
                   end
-                  order.save!
-                  payment.finalize!
                 end
                 return t('cyber_plus_paiement.payment_success')
               else
@@ -97,29 +99,21 @@ module Spree
     end
 
     def payment_success(data)
-      fake_card = Creditcard.new({
-          :cc_type => data[:vads_card_brand].to_s,
-          :month => Time.now.month,
-          :year => Time.now.year,
-          :first_name => @order.bill_address.firstname.to_s,
-          :last_name => @order.bill_address.lastname.to_s,
-          :verification_value => '000',
-          :number => data[:vads_card_number].to_s
-        })
+      payment = @order.payments.where(
+          amount: @order.total,
+          payment_method_id: @payment_method.id,
+          state: 'processing'
+      ).last
 
-      payment = @order.checkout.payments.create({
-          :amount => @order.total,
-          :source => fake_card,
-          :payment_method_id => @payment_method.id
-        })
+      #raise "Payment Not Found" unless payment.present?
+      if payment.blank?
+        payment = @order.payments.create(
+            amount: @order.total,
+            payment_method_id: @payment_method.id,
+            state: 'processing'
+        )
+      end
 
-      # query - need 0 in amount for an auth? see main code
-      transaction = CreditcardTxn.new({
-          :amount => @order.total,
-          :response_code => 'success',
-          :txn_type => CreditcardTxn::TxnType::PURCHASE
-        })
-      payment.txns << transaction
       return payment
     end
 
