@@ -42,6 +42,8 @@ module Spree
           redirect_to order_url(@order)
         else
           flash[:error] = msg
+          # HACK : To force redirection on payment page
+          @order.state = 'payment'
           redirect_to checkout_state_path(@order)
         end
       else
