@@ -1,14 +1,53 @@
-<div id="confirm_paiement">
-  <h2><%= I18n.t('cyber_plus_paiement.checkout_validation_title') %></h2>
-  <fieldset id="order_details">
-    <legend><%= I18n.t('cyber_plus_paiement.checkout_validation_confirm') %></legend>
-    <%= render :partial => 'spree/shared/order_details', locals: {order: @order} -%>
-  </fieldset>
-  <br/><br/>
-  <p><%= I18n.t('cyber_plus_paiement.checkout_validation_instructions') %></p>
-  <br/><br/>
-	<%= form_tag @payment_method.preferred_url do -%>
-		<%= @payment_method.build_request(@order).map{ |k, v| hidden_field_tag(k.to_s, v) }.join.html_safe %>
-		<%= submit_tag I18n.t('cyber_plus_paiement.checkout_validation_submit') %>
-	<% end %>
-</div>
+<section class="page">
+  <div class="categories">
+    <div class="categories_content">
+      <h2><a href="/products"><%= t('menu.shop') %></a></h2>
+      <% @taxonomies = Spree::Taxonomy.includes(root: :children) %>
+      <%= render :partial => 'spree/shared/left_taxo' %>
+    </div>
+  </div>
+  <div class="centre_page" id="confirm_paiement">
+    <div class="centre_page_content">
+      <h2><%= I18n.t('cyber_plus_paiement.checkout_validation_title') %></h2>
+      <%= checkout_progress %>
+      
+      <table id="cart-detail" >
+        <thead>
+          <tr>
+            <th class="cart-item-description-header" colspan="2"><%= Spree.t(:item) %></th>
+            <th class="cart-item-price-header"><%= Spree.t(:price) %></th>
+            <th class="cart-item-quantity-header"><%= Spree.t(:qty) %></th>
+            <th class="cart-item-total-header"><%= Spree.t(:total) %></th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody id="line_items">
+          <%= render partial: 'spree/orders/line_item', collection: order_form.object.line_items, locals: {order_form: order_form} %>
+        </tbody>
+         <% if @order.adjustments.nonzero.exists? || @order.line_item_adjustments.nonzero.exists? || @order.shipment_adjustments.nonzero.exists? || @order.shipments.any? %>
+          <tr class="cart-subtotal">
+            <td colspan="4" align='right'><h5><%= Spree.t(:cart_subtotal, :count => @order.line_items.sum(:quantity)) %></h5></th>
+            <td colspan="2"><h5><%= order_form.object.display_item_total %></h5></td>
+          </tr>
+          <%= render "spree/orders/adjustments" %>
+        <% end %>
+        
+        <tr class="cart-total validation_line">
+          <td colspan="4" align='right'><h5><%= Spree.t(:total) %></h5></td>
+          <td colspan="2"><h5><%= order_form.object.display_total %></h5></td>
+        </tr>
+        <tr class="cart_checkout validation_line">
+          <td colspan="4" align='right'>
+            <p><%= I18n.t('cyber_plus_paiement.checkout_validation_instructions') %></p>
+          </td>
+          <td>
+            <%= form_tag @payment_method.preferred_url do -%>
+              <%= @payment_method.build_request(@order).map{ |k, v| hidden_field_tag(k.to_s, v) }.join.html_safe %>
+              <%= submit_tag I18n.t('cyber_plus_paiement.checkout_validation_submit') %>
+            <% end %>
+          </td>
+        </tr>
+      </table>
+    </div>
+  </div>
+</section>

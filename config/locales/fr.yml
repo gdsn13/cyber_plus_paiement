@@ -19,7 +19,7 @@ fr:
     payment_error_order_not_found: "Erreur : Commande introuvable !!"
     payment_error_server_trace: "<br />Trace du serveur CyberPlus : "
     checkout_message: "Vous serez rediriger vers la plateforme de paiement sécurisé de CyberPlus une fois que vous aurez validé votre commande."
-    checkout_validation_title: "Cyber Plus Paiement"
+    checkout_validation_title: "Finaliser ma commande"
     checkout_validation_confirm: "Confirmation de la commande"
     checkout_validation_instructions: "Vous allez être redirigé(e) vers la plateforme de paiement sécurisé de CyberPlus pour effectuer le paiement puis vous reviendrez sur notre site."
     checkout_validation_submit: "Payer maintenant"
