@@ -42,9 +42,7 @@ module Spree
           redirect_to order_url(@order)
         else
           flash[:error] = msg
-          # HACK : To force redirection on payment page
-          @order.state = 'payment'
-          redirect_to checkout_state_path(@order)
+          redirect_to checkout_state_path("payment")
         end
       else
         flash[:error] = t('cyber_plus_paiement.payment_error_order_not_found')
