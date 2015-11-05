@@ -10,6 +10,7 @@ module Spree
       @payment_method = PaymentMethod.find(params[:gateway_id])
       @order.payments.destroy_all
       payment = @order.payments.create!(:amount => @order.total, :payment_method_id => @payment_method.id)
+
       if @order.blank? || @payment_method.blank?
         flash[:error] = t("cyber_plus_paiement.invalid_arguments")
         redirect_to checkout_url
@@ -38,7 +39,7 @@ module Spree
 
         if @order.completed?
           session[:order_id] = nil
-          flash[:notice] = msg
+          flash[:error] = msg
           redirect_to order_url(@order)
         else
           flash[:error] = msg
