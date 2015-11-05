@@ -67,30 +67,34 @@ module Spree
     end
 
     def self.process_payment(order, payment_method, data)
-      payment = order.payments.where(
-          amount: order.total,
-          payment_method_id: payment_method.id,
-          state: 'processing'
-      ).last
 
-      #raise "Payment Not Found" unless payment.present?
-      if payment.blank?
-        payment = order.payments.create(
-            amount: order.total,
-            payment_method_id: payment_method.id,
-            state: 'processing'
-        )
+      payment = order.payments.where(:payment_method_id => payment_method.id).last
+      payment.amount = order.total
+      order.payment_total = order.total
+
+      unless payment
+        payment = order.payments.create({:amount => order.total,
+                                         :source => payment_method.id,
+                                         :payment_method => payment_method},
+                                         :without_protection => true)
+        payment.started_processing!
+        payment.pend!
       end
 
-      # INFO : Old hack ... for code legacy
-      #until order.state.completed?
-      #  order.next!
-      #end
-
-      # TODO : Check borderline cases
-      if payment.complete
-        order.finalize!
+      unless payment.completed?
+        payment.complete!        
       end
+
+      order.update_attributes({:state => "complete", :completed_at => Time.now})
+
+      until order.state == "complete"
+        if order.next!
+          order.update!
+          state_callback(:after)
+        end
+      end
+
+      order.finalize!       
 
       return payment
     end

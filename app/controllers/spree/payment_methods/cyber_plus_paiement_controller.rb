@@ -9,7 +9,7 @@ module Spree
       @order = Order.find(params[:order_id])
       @payment_method = PaymentMethod.find(params[:gateway_id])
       @order.payments.destroy_all
-      payment = @order.payments.create!(:amount => 0, :payment_method_id => @payment_method.id)
+      payment = @order.payments.create!(:amount => @order.total, :payment_method_id => @payment_method.id)
       if @order.blank? || @payment_method.blank?
         flash[:error] = t("cyber_plus_paiement.invalid_arguments")
         redirect_to checkout_url
@@ -48,11 +48,14 @@ module Spree
         flash[:error] = t('cyber_plus_paiement.payment_error_order_not_found')
         redirect_to root_url
       end
+
+    
     end
 
     private
 
     def response_treatment(order, params, check_complete_later=false)
+
       # Check if the order is not complete or if we just want to check that later in the process and also escape the
       # message linked to an order already complete). It is usefull in the case of 'comeback' has we want the message
       # corresponding to the request statement and not directly the order statement
@@ -68,6 +71,7 @@ module Spree
                 # If we just want the msg, we should skip the payement process, but in case the order hasn't been
                 # completed as it should (callback late ?!), we should proceed the payement here
                 if !order.completed?
+
                   payment = PaymentMethod::CyberPlusPaiement.process_payment(order, payment_method, params)
 
                   if payment.completed?
