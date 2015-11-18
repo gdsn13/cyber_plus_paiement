@@ -21,7 +21,7 @@ module Spree
 
     def callback
       if params[:vads_order_id] && @order=Order.find(params[:vads_order_id])
-        msg = response_treatment(@order, params)
+        msg = response_treatment(@order, params, true)
 
         if @order.completed?
           render :text => t('cyber_plus_paiement.payment_success_callback')
@@ -60,6 +60,7 @@ module Spree
       # Check if the order is not complete or if we just want to check that later in the process and also escape the
       # message linked to an order already complete). It is usefull in the case of 'comeback' has we want the message
       # corresponding to the request statement and not directly the order statement
+
       if order.completed? || check_complete_later
         if (payment_method=order.payments.first.payment_method) && payment_method.kind_of?(PaymentMethod::CyberPlusPaiement)
           # SECURITY : Verifying the signature from the request
@@ -72,7 +73,7 @@ module Spree
                 # If we just want the msg, we should skip the payement process, but in case the order hasn't been
                 # completed as it should (callback late ?!), we should proceed the payement here
                 if !order.completed?
-
+                  
                   payment = PaymentMethod::CyberPlusPaiement.process_payment(order, payment_method, params)
 
                   if payment.completed?
