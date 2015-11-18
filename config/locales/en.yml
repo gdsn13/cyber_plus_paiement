@@ -6,7 +6,7 @@ en:
   cert_for_prod: Certificate for the Production environment
   cyber_plus_paiement:
     invalid_arguments: Invalid arguments
-    payment_success: "Yes! Your payment has been accepted, your order is completed !!"
+    payment_success: "Your payment has been accepted, your order is completed"
     payment_success_callback: "Payment validated on Spree server"
     payment_error_callback: "Payment NOT validated on Spree server ::: %{msg}"
     payment_error_refused: "Error : An problem occured during the payment and it has not been proceeded, please try again or contact us to solve that issue."

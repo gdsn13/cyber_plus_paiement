@@ -6,7 +6,7 @@ fr:
   cert_for_prod: "Certificat pour l'environnement de Production"
   cyber_plus_paiement:
     invalid_arguments: "Arguments invalides (Numéro de commande ou numéro de méthode de paiement)"
-    payment_success: "Votre paiement a été enregistré avec succès, votre commande est validée !!"
+    payment_success: "Votre paiement a été enregistré avec succès, votre commande est validée"
     payment_success_callback: "Paiement validé sur le serveur Spree"
     payment_error_callback: "Paiement NON validé sur le serveur Spree ::: %{msg}"
     payment_error_refused: "Erreur : Un problème est survenu durant le paiement et celui-ci n'a pu être finalisé, veillez reéssayer ou nous contacter en cas de nouveau problème."
