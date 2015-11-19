@@ -39,7 +39,7 @@ module Spree
       data = {}
       data['vads_action_mode'] = 'INTERACTIVE'
       data['vads_amount'] = (order.total.to_f * 100).to_i
-      data['vads_ctx_mode'] = (self.test? ? 'TEST' : 'PROD')
+      data['vads_ctx_mode'] = (self.test? ? 'TEST' : 'PRODUCTION')
       data['vads_currency'] = 978
       data['vads_cust_email'] = order.user.email
       data['vads_order_id'] = order.id
